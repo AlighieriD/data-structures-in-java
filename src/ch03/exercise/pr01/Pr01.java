@@ -16,38 +16,26 @@ public class Pr01 {
     /**
      * L , P 包含升序排列的整数
      * 打印出L中由P所指定的位置上的元素
+     *
+     * 利用了增强for循环，本质上是利用了iterator
+     * 可以记录每次循环的当前位置
      * @param L
      * @param P
      */
-    public static void printLots(List<Integer> L,List<Integer> P){
-        Iterator<Integer> iterator = L.iterator();
+    public <T> List<T> printLots(List<T> L,List<Integer> P){
+        Iterator<T> iterator = L.iterator();
+        List<T> res = new ArrayList<>();
         int i = 0;
-        for (Integer p :
-                P) {
-            while (iterator.hasNext() && i < L.size()){
-                Integer l = iterator.next();
-                if (i++ == p){
-                    System.out.println(l);
-                }
+        for (Integer p : P ) {
+            while (iterator.hasNext() && i < p){
+                iterator.next();
+                i++;
+            }
+            if (iterator.hasNext() && i == p){
+                res.add(iterator.next());
+                i++;
             }
         }
+        return res;
     }
-
-    public static void main(String[] args) {
-        List<Integer> L = new ArrayList<>();
-        L.add(1);
-        L.add(2);
-        L.add(3);
-        L.add(4);
-        L.add(5);
-        L.add(6);
-        L.add(7);
-        List<Integer> P = new ArrayList<>();
-        P.add(1);
-        P.add(3);
-        P.add(4);
-        P.add(6);
-        printLots(L,P);
-    }
-
 }
