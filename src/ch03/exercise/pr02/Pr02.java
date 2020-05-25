@@ -14,6 +14,18 @@ public class Pr02 {
             }
         }
         public void add(E e){
+            final Node<E> l = last;
+            Node<E> node = new Node<>(e,null);
+            last = node;
+            if (l == null){
+                first = node;
+            }else {
+                l.next = node;
+            }
+            size++;
+        }
+
+        public void change(int i,int j){
             
         }
     }
