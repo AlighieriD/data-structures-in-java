@@ -25,8 +25,41 @@ public class Pr02 {
             size++;
         }
 
-        public void change(int i,int j){
-            
+
+        /**
+         * 通过只调整链（而不是数据）来交换两个相邻的元素。
+         * 通用接口
+         * 是否相邻，是否是头尾节点，都需要考虑
+         * @param i
+         * @param j
+         */
+        public void swap(int i, int j){
+            // TODO i j 是否符合规则
+            Node<E> f = first;
+            Node<E> prei = null, prej = null;
+            int start = 0;
+            // TODO 此处假设j > i
+            while (f != null && start <= j){
+                if (start == i - 1){
+                    prei = f;
+                } else if (start == j - 1){
+                    prej = f;
+                }
+                start++;
+                f = f.next;
+            }
+            // i == 0的情况
+            if (prei == null){
+
+            }else {
+                prei.next.next = prej.next.next;
+                prei.next = prej.next;
+                if (j - i == 1){
+                    prei.next.next = prej;
+                }else {
+                    prei.next.next
+                }
+            }
         }
     }
     public class DoubleLinkedList<E>{
