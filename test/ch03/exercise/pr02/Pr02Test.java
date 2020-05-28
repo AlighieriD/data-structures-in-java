@@ -13,14 +13,33 @@ import static org.junit.jupiter.api.Assertions.*;
 class Pr02Test {
 
     @Test
-    void swap() {
+    void singleLinkedListSwap() {
         Pr02.SingleLinkedList<Integer> s = new Pr02.SingleLinkedList<>();
         for (int i = 0; i < 10; i++) {
             s.add(i);
         }
         s.print();
         System.out.println();
-        s.swap(2,9);
+        s.swap(0,9);
+        s.print();
+        s.add(10);
+        System.out.println();
+        s.print();
+
+    }
+
+    @Test
+    void doubleLinkedListSwap() {
+        Pr02.DoubleLinkedList<Integer> s = new Pr02.DoubleLinkedList<>();
+        for (int i = 0; i < 10; i++) {
+            s.add(i);
+        }
+        s.print();
+        System.out.println();
+        s.swap(1,8);
+        s.print();
+        s.add(10);
+        System.out.println();
         s.print();
 
     }

@@ -44,18 +44,18 @@ public class Pr02 {
             // 找到prei 和 prej
             // 哨兵节点，简化代码
             Node<E> head = new Node<>(null,first);
-            last.next = new Node<>(null,null);
+            Node<E> h = head;
             int start = 0;
             Node<E> prei = null, prej = null;
-            while (head != null && start <= j){
+            while (h != null && start <= j){
                 if (start == i){
-                    prei = head;
+                    prei = h;
                 }
                 if (start == j){
-                    prej = head;
+                    prej = h;
                 }
                 start++;
-                head = head.next;
+                h = h.next;
             }
             Node<E> tmp = prei.next;
             prei.next = prej.next;
@@ -63,19 +63,21 @@ public class Pr02 {
             tmp = prei.next.next;
             prei.next.next = prej.next.next;
             prej.next.next = tmp;
-            head = null;
-            last.next = null;
+            first = head.next;
+            if (j == size - 1){
+                last = prej.next;
+            }
         }
 
         private void check(int i){
-            if (i < 0 || i > size){
+            if (i < 0 || i >= size){
                 throw new IndexOutOfBoundsException();
             }
         }
 
         public void print(){
             Node<E> f = first;
-            while (f.next != null){
+            while (f != null){
                 System.out.print(f.value);
                 if (f.next != null){
                     System.out.print(" -> ");
@@ -84,10 +86,83 @@ public class Pr02 {
             }
         }
     }
-    public class DoubleLinkedList<E>{
+    public static class DoubleLinkedList<E>{
+        private Node<E> head;
+        private Node<E> tail;
+        public DoubleLinkedList(){
+            head = new Node<>(null,null,null);
+            tail = new Node<>(head,null,null);
+            head.next = tail;
+        }
+        private int size;
+        private static class Node<E> {
+            E value;
+            Node<E> next;
+            Node<E> pre;
+            Node(Node<E> pre, E e, Node<E> next){
+                this.pre = pre;
+                this.value = e;
+                this.next = next;
+            }
+        }
+        public void add(E e){
+            Node<E> node = new Node<>(tail.pre,e,tail);
+            tail.pre.next = node;
+            tail.pre = node;
+            size++;
+        }
+        private void check(int i){
+            if (i < 0 || i >= size){
+                throw new IndexOutOfBoundsException();
+            }
+        }
 
-    }
+        public void swap(int i , int j){
+            // 检查 i j 下标是否合法
+            check(i);
+            check(j);
+            // 保证 j > i
+            if (i > j){
+                swap(j,i);
+                return;
+            }
+            // 找到prei 和 prej
+            // 哨兵节点，简化代码
+            Node<E> f = head.next;
+            int start = 0;
+            Node<E> nodei = null, nodej = null;
+            while (f != null && start <= j){
+                if (start == i){
+                    nodei = f;
+                }
+                if (start == j){
+                    nodej = f;
+                }
+                start++;
+                f = f.next;
+            }
+            Node<E> tmp1 = nodei.next;
+            Node<E> tmp2 = nodei.pre;
+            nodei.next = nodej.next;
+            nodej.next.pre = nodei;
+            nodei.pre = nodej.pre;
+            nodej.pre.next = nodei;
+            nodej.next = tmp1;
+            tmp1.pre = nodej;
+            nodej.pre = tmp2;
+            tmp2.next = nodej;
+        }
 
-    public static void main(String[] args) {
+        public void print(){
+            Node<E> f = head.next;
+            for (int i = 0; i < size; i++) {
+                System.out.print(f.value);
+                if (i != size - 1){
+                    System.out.print(" -> ");
+                }
+                f = f.next;
+            }
+       }
+
     }
 }
