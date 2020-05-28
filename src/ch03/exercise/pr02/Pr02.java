@@ -1,7 +1,9 @@
 package ch03.exercise.pr02;
 
+import java.util.Iterator;
+
 public class Pr02 {
-    public static class SingleLinkedList<E>{
+    public static class SingleLinkedList<E> {
         private Node<E> first;
         private Node<E> last;
         private int size;
@@ -40,7 +42,9 @@ public class Pr02 {
                 return;
             }
             // 找到prei 和 prej
+            // 哨兵节点，简化代码
             Node<E> head = new Node<>(null,first);
+            last.next = new Node<>(null,null);
             int start = 0;
             Node<E> prei = null, prej = null;
             while (head != null && start <= j){
@@ -53,7 +57,14 @@ public class Pr02 {
                 start++;
                 head = head.next;
             }
-
+            Node<E> tmp = prei.next;
+            prei.next = prej.next;
+            prej.next = tmp;
+            tmp = prei.next.next;
+            prei.next.next = prej.next.next;
+            prej.next.next = tmp;
+            head = null;
+            last.next = null;
         }
 
         private void check(int i){
@@ -62,6 +73,16 @@ public class Pr02 {
             }
         }
 
+        public void print(){
+            Node<E> f = first;
+            while (f.next != null){
+                System.out.print(f.value);
+                if (f.next != null){
+                    System.out.print(" -> ");
+                }
+                f = f.next;
+            }
+        }
     }
     public class DoubleLinkedList<E>{
 
