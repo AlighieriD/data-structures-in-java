@@ -127,7 +127,6 @@ public class Pr02 {
                 return;
             }
             // 找到prei 和 prej
-            // 哨兵节点，简化代码
             Node<E> f = head.next;
             int start = 0;
             Node<E> nodei = null, nodej = null;
