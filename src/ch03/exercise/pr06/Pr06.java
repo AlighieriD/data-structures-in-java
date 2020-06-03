@@ -25,6 +25,23 @@ public class Pr06 {
             curr = curr.next;
         }
         curr.next = head.next;
-        
+        head.next.pre = curr;
+        curr = curr.next;
+        while (curr.next != curr){
+            int start = 0;
+            while (start++ < m){
+                curr = curr.next;
+            }
+            curr.pre.next = curr.next;
+            curr.next.pre = curr.pre;
+            curr = curr.next;
+        }
+        return curr.i;
+    }
+
+    public static void main(String[] args) {
+        Pr06 p = new Pr06();
+        System.out.println(p.josephus(5,1));
+
     }
 }
