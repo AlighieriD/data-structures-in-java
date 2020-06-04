@@ -120,7 +120,7 @@ public class MyLinkedList<E> implements Iterable<E> {
         public void remove() {
             if (modCount != expectedModCount)
                 throw new ConcurrentModificationException();
-            if (!hasNext())
+            if (!okToRemove)
                 throw new NoSuchElementException();
             MyLinkedList.this.remove(current.pre);
             expectedModCount++;
