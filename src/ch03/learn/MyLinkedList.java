@@ -6,10 +6,10 @@ import java.util.NoSuchElementException;
 
 public class MyLinkedList<E> implements Iterable<E> {
 
-    private int theSize;
-    private int modCount = 0;
-    private Node<E> beginMarker;
-    private Node<E> endMarker;
+    protected int theSize;
+    protected int modCount = 0;
+    protected Node<E> beginMarker;
+    protected Node<E> endMarker;
     private static class Node<E>{
         public Node(E e, Node<E> pre,Node<E> next){
             this.data = e;

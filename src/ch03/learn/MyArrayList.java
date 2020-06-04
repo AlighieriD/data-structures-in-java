@@ -3,9 +3,11 @@ package ch03.learn;
 import java.util.Iterator;
 
 public class MyArrayList<E> implements Iterable<E> {
+
     private static final int DEFAULT_CAPACITY = 10;
-    private int theSize;
-    private E[] theItems;
+    // 此处破坏了封装性，为了通过继承实现习题
+    protected int theSize;
+    protected E[] theItems;
 
     public MyArrayList () {
         doClear();
