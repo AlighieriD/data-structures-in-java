@@ -15,7 +15,7 @@ public class Pr11 {
         private Node<E> head = new Node<>(null,null);
 
         // 返回链表大小的方法。
-        public int getSize() {
+        public int getSize(){
             return size;
         }
 
@@ -28,44 +28,59 @@ public class Pr11 {
             }
         }
 
-        private void addAfter(Node<E> node, E e){
-            if (node != null){
-                Node<E> nextNode = node.next;
-                node.next = new Node<>(e,nextNode);
-            }
-        }
-
-        // 测试值X是否含于链表的方法。
-        public boolean isContains(E e){
-            return getPreNode(e) != null;
-        }
-
         private Node<E> getPreNode(E e){
             Node<E> curr = head.next;
             Node<E> pre = head;
             if (e != null){
                 while (curr != null){
-                    if (e.equals(curr.e))
+                    if (e.equals(curr.e)){
                         return pre;
+                    }
                     pre = curr;
                     curr = curr.next;
                 }
             } else {
                 while (curr != null){
-                    if (e == curr.e)
+                    if (e == curr.e){
                         return pre;
+                    }
                     pre = curr;
                     curr = curr.next;
                 }
+
             }
             return null;
         }
 
+        private void addAfter(Node<E> node, E e){
+            if (node != null){
+                Node<E> nextNode = node.next;
+                node.next = new Node<>(e,nextNode);
+                size++;
+            }
+        }
+
+        private Node<E> removeAfter(Node<E> node){
+            if (node != null && node.next != null){
+                Node<E> removeNode = node.next;
+                node.next = removeNode.next;
+                size--;
+                return removeNode;
+            }
+            return null;
+        }
+
+        // 测试值X是否含于链表的方法。
+        public boolean isContains(E e){
+            Node<E> preNode = getPreNode(e);
+            return preNode != null;
+        }
+
         // 如果值X尚未含于链表，添加值X到该链表的方法。
         public boolean addIfAbsent(E x){
-            if (!isContains(x)){
+            Node<E> preNode = getPreNode(x);
+            if (preNode == null){
                 addAfter(head,x);
-                size++;
                 return true;
             } else {
                 return false;
@@ -75,11 +90,9 @@ public class Pr11 {
         // 如果值X含于链表，将X从该链表中删除的方法。
         public E removeIfPresent(E x){
             Node<E> preNode = getPreNode(x);
-            Node<E> nextNode = preNode.next;
             if (preNode != null){
-                preNode.next = nextNode.next;
-                size--;
-                return nextNode.e;
+                Node<E> removed = removeAfter(preNode);
+                return removed.e;
             } else {
                 return null;
             }
