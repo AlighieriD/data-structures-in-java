@@ -10,15 +10,15 @@ public class MyLinkedList<E> implements Iterable<E> {
     protected int modCount = 0;
     protected Node<E> beginMarker;
     protected Node<E> endMarker;
-    private static class Node<E>{
+    protected static class Node<E>{
         public Node(E e, Node<E> pre,Node<E> next){
             this.data = e;
             this.pre = pre;
             this.next = next;
         }
-        E data;
-        Node<E> pre;
-        Node<E> next;
+        public E data;
+        public Node<E> pre;
+        public Node<E> next;
     }
 
     public MyLinkedList(){
@@ -112,10 +112,10 @@ public class MyLinkedList<E> implements Iterable<E> {
         return new MyLinkedListIterator();
     }
 
-    private class MyLinkedListIterator implements Iterator<E> {
-        private Node<E> current = beginMarker.next;
-        private int expectedModCount = modCount;
-        private boolean okToRemove = false;
+    protected class MyLinkedListIterator implements Iterator<E> {
+        public Node<E> current = beginMarker.next;
+        public int expectedModCount = modCount;
+        public boolean okToRemove = false;
         @Override
         public void remove() {
             if (modCount != expectedModCount)
