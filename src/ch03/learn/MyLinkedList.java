@@ -69,7 +69,7 @@ public class MyLinkedList<E> implements Iterable<E> {
         return remove(getNode(idx));
     }
 
-    private void addBefore(Node<E> node, E e){
+    protected void addBefore(Node<E> node, E e){
         Node<E> newNode = new Node<>(e,node.pre,node);
         newNode.pre.next = newNode;
         node.pre = newNode;
@@ -77,7 +77,7 @@ public class MyLinkedList<E> implements Iterable<E> {
         theSize++;
     }
 
-    private E remove(Node<E> node){
+    protected E remove(Node<E> node){
         node.pre.next = node.next;
         node.next.pre = node.pre;
         theSize--;

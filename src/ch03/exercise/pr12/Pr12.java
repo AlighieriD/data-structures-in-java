@@ -1,6 +1,5 @@
 package ch03.exercise.pr12;
 
-import java.util.TreeMap;
 
 /**
  * Created by YH on 2020/6/5.
@@ -36,15 +35,14 @@ public class Pr12 {
         private Node<E> getPreNode(E e){
             Node<E> curr = head.next;
             Node<E> pre = head;
-            if (e != null){
-                while (curr != null){
-                    if (e.compareTo(curr.e) >= 0){
-                        return pre;
-                    }
-                    pre = curr;
-                    curr = curr.next;
+            while (curr != null){
+                if (e.compareTo(curr.e) <= 0){
+                    return pre;
                 }
+                pre = curr;
+                curr = curr.next;
             }
+
             return pre;
         }
 
@@ -69,14 +67,14 @@ public class Pr12 {
         // 测试值X是否含于链表的方法。
         public boolean isContains(E e){
             Node<E> preNode = getPreNode(e);
-            return preNode != null;
+            return preNode.next != null && preNode.next.e.equals(e);
         }
 
         // 如果值X尚未含于链表，添加值X到该链表的方法。
         public boolean addIfAbsent(E x){
             Node<E> preNode = getPreNode(x);
-            if (preNode == null){
-                addAfter(head,x);
+            if (preNode.next == null || !x.equals(preNode.next.e)){
+                addAfter(preNode,x);
                 return true;
             } else {
                 return false;
@@ -86,7 +84,7 @@ public class Pr12 {
         // 如果值X含于链表，将X从该链表中删除的方法。
         public E removeIfPresent(E x){
             Node<E> preNode = getPreNode(x);
-            if (preNode != null){
+            if (preNode.next != null && x.equals(preNode.next.e)){
                 Node<E> removed = removeAfter(preNode);
                 return removed.e;
             } else {
@@ -94,5 +92,4 @@ public class Pr12 {
             }
         }
     }
-
 }

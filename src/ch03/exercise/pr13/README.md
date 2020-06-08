@@ -1,0 +1,8 @@
+## 3.13 添加ListIterator对MyArrayList类的支持。
+添加ListIterator对MyArrayList类的支持。java.util中的ListIterator接口比
+3.3.5节所述含有更多的方法。注意，你要编写一个listIterator方法返回新构造的
+ListIterator，并且还要注意现存的迭代器方法可以返回一个新构造的ListIterator。
+这样，你将改变ArrayListIterator，使的它实现ListIterator而不是Iterator。
+对于3.3.5节未列出的那些方法抛出UnsupportedOperationException异常。
+
+---
