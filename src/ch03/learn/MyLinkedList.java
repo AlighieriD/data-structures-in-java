@@ -85,11 +85,11 @@ public class MyLinkedList<E> implements Iterable<E> {
         return node.data;
     }
 
-    private Node<E> getNode(int idx){
+    protected Node<E> getNode(int idx){
         return getNode(idx,0,size() - 1);
     }
 
-    private Node<E> getNode(int idx, int lower, int upper){
+    protected Node<E> getNode(int idx, int lower, int upper){
         Node<E> node;
         if (idx < lower || idx > upper)
             throw new ArrayIndexOutOfBoundsException();
