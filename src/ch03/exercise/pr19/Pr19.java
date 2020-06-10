@@ -29,11 +29,16 @@ public class Pr19<E> {
     }
 
     public boolean add(E e){
-        if (last == null){
-            first = last = new Node<>(null,e,null);
+        Node<E> l = last;
+        Node<E> newNode = new Node<>(l,e,null);
+        last = newNode;
+        if (l == null){
+            first = last;
         }else {
-            addAfter(last,e);
+            l.next = newNode;
         }
+        theSize++;
+        modCount++;
     }
 
     public void add(int idx, E e){
@@ -52,7 +57,7 @@ public class Pr19<E> {
     private void addAfter(Node<E> p, E e){
         // 保证 p 不是空节点
         Node<E> n = p.next;
-        
+
     }
 
     private E remove(Node<E> p){}
