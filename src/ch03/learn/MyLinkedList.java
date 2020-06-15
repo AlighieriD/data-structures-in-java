@@ -29,7 +29,7 @@ public class MyLinkedList<E> implements Iterable<E> {
         doClear();
     }
 
-    private void doClear(){
+    protected void doClear(){
         beginMarker = new Node<>(null,null,null);
         endMarker = new Node<>(null,beginMarker,null);
         beginMarker.next = endMarker;
@@ -94,7 +94,7 @@ public class MyLinkedList<E> implements Iterable<E> {
         if (idx < lower || idx > upper)
             throw new ArrayIndexOutOfBoundsException();
         if (idx < size() / 2){
-            node = beginMarker;
+            node = beginMarker.next;
             for (int i = 0; i < idx; i++) {
                 node = node.next;
             }
@@ -145,4 +145,5 @@ public class MyLinkedList<E> implements Iterable<E> {
             return e;
         }
     }
+
 }
