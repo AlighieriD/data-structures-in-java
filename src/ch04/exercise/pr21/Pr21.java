@@ -16,7 +16,7 @@ public class Pr21 {
                 this.right = right;
             }
         }
-        private static final int TOLERANCE = 1;
+        protected static final int TOLERANCE = 1;
 
         protected EntryNode<K,V> root;
 
@@ -41,7 +41,6 @@ public class Pr21 {
             }
             return balance(node);
         }
-
 
         public V remove(K k){
             EntryNode<K,V> holder = new EntryNode<>(k,null,-1,null,null);
@@ -79,7 +78,7 @@ public class Pr21 {
             return t;
         }
 
-        private EntryNode<K,V> balance(EntryNode<K,V> node){
+        protected EntryNode<K,V> balance(EntryNode<K,V> node){
             if (node == null)
                 return null;
             if (height(node.left) - height(node.right) > TOLERANCE){
@@ -101,7 +100,7 @@ public class Pr21 {
             return node;
         }
 
-        private EntryNode<K,V> rotateWithLeftChild(EntryNode<K,V> node){
+        protected EntryNode<K,V> rotateWithLeftChild(EntryNode<K,V> node){
             EntryNode<K,V> t = node.left;
             node.left = t.right;
             t.right = node;
@@ -110,7 +109,7 @@ public class Pr21 {
             return t;
         }
 
-        private EntryNode<K,V> rotateWithRightChild(EntryNode<K,V> node){
+        protected EntryNode<K,V> rotateWithRightChild(EntryNode<K,V> node){
             EntryNode<K,V> t = node.right;
             node.right = t.left;
             t.left = node;
@@ -119,12 +118,12 @@ public class Pr21 {
             return t;
         }
 
-        private EntryNode<K,V> doubleWithLeftChild(EntryNode<K,V> node){
+        protected EntryNode<K,V> doubleWithLeftChild(EntryNode<K,V> node){
             node.left = rotateWithRightChild(node.left);
             return rotateWithLeftChild(node);
         }
 
-        private EntryNode<K,V> doubleWithRightChild(EntryNode<K,V> node){
+        protected EntryNode<K,V> doubleWithRightChild(EntryNode<K,V> node){
             node.right = rotateWithLeftChild(node.right);
             return rotateWithRightChild(node);
         }
