@@ -2,13 +2,13 @@ package ch04.exercise.pr21;
 
 public class Pr21 {
     public static class MyAVLTree<K extends Comparable<? super K>,V>{
-        private static class EntryNode<K,V> {
-            K k;
-            V v;
-            int height;
-            EntryNode<K,V> left;
-            EntryNode<K,V> right;
-            EntryNode(K k, V v, int height, EntryNode<K,V> left, EntryNode<K,V> right){
+        protected static class EntryNode<K,V> {
+            public K k;
+            public V v;
+            public int height;
+            public EntryNode<K,V> left;
+            public EntryNode<K,V> right;
+            public EntryNode(K k, V v, int height, EntryNode<K,V> left, EntryNode<K,V> right){
                 this.k = k;
                 this.v = v;
                 this.height = height;
@@ -18,9 +18,9 @@ public class Pr21 {
         }
         private static final int TOLERANCE = 1;
 
-        EntryNode<K,V> root;
+        protected EntryNode<K,V> root;
 
-        private int height(EntryNode<K,V> node){
+        protected static int height(EntryNode node){
             return node == null ? -1 : node.height;
         }
 
@@ -39,8 +39,44 @@ public class Pr21 {
             } else {
 
             }
-            //TODO 平衡
             return balance(node);
+        }
+
+
+        public V remove(K k){
+            EntryNode<K,V> holder = new EntryNode<>(k,null,-1,null,null);
+            root = remove(k,root,holder);
+            return holder.v;
+        }
+
+        private EntryNode<K,V> remove(K k, EntryNode<K,V> t,EntryNode<K,V> holder){
+            if (t == null)
+                return null;
+            int cpr = k.compareTo(t.k);
+            if (cpr < 0){
+                t.left = remove(k,t.left,holder);
+            } else if (cpr > 0){
+                t.right = remove(k,t.right,holder);
+            } else {
+                if (holder.v == null)
+                    holder.v = t.v;
+                if (t.left != null && t.right != null){
+                    EntryNode<K,V> min = findMin(t.right);
+                    t.k = min.k;
+                    t.v = min.v;
+                    t.right = remove(min.k,t.right,holder);
+                } else {
+                    t = t.left != null ? t.left : t.right;
+                }
+            }
+            return balance(t);
+        }
+
+        public EntryNode<K,V> findMin(EntryNode<K,V> t){
+            while (t.left != null){
+                t = t.left;
+            }
+            return t;
         }
 
         private EntryNode<K,V> balance(EntryNode<K,V> node){
@@ -48,13 +84,13 @@ public class Pr21 {
                 return null;
             if (height(node.left) - height(node.right) > TOLERANCE){
                 // node.left 的树高至少为1 ，
-                if (height(node.left.left) - height(node.left.right) > TOLERANCE){
+                if (height(node.left.left) >= height(node.left.right)){
                     node = rotateWithLeftChild(node);
                 } else {
                     node = doubleWithLeftChild(node);
                 }
             } else if (height(node.right) - height(node.left) > TOLERANCE){
-                if (height(node.right.right) - height(node.right.left) > TOLERANCE){
+                if (height(node.right.right) >= height(node.right.left)){
                     node = rotateWithRightChild(node);
                 } else {
                     node = doubleWithRightChild(node);
@@ -105,18 +141,5 @@ public class Pr21 {
             print(t.right);
         }
 
-    }
-
-    public static void main(String[] args) {
-        MyAVLTree<String,String> myAVLTree = new MyAVLTree<>();
-        myAVLTree.insert("A","AAA");
-        myAVLTree.insert("B","BBB");
-        myAVLTree.insert("C","CCC");
-        myAVLTree.insert("D","DDD");
-        myAVLTree.insert("E","EEE");
-        myAVLTree.insert("F","FFF");
-        myAVLTree.insert("G","GGG");
-        myAVLTree.insert("H","HHH");
-//        myAVLTree.print();
     }
 }
