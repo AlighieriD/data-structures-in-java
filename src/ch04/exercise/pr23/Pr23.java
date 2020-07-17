@@ -36,11 +36,9 @@ public class Pr23 {
                 while (t != null){
                     cpr = k.compareTo(t.k);
                     if (cpr < 0){
-                        t.diff++;
                         p = t;
                         t = t.left;
                     } else if (cpr > 0){
-                        t.diff--;
                         p = t;
                         t = t.right;
                     } else {
@@ -49,61 +47,161 @@ public class Pr23 {
                 }
                 if (cpr < 0){
                     p.left = new EntryNode<>(k,v, 0,null,null,p);
+                    p.diff++;
                 } else if (cpr > 0){
                     p.right = new EntryNode<>(k,v, 0,null,null,p);
-                }
-                balance(p);
-            }
-        }
-
-        private void balance(EntryNode<K,V> node){
-            while (node != null && isBalance(node)){
-                node = node.parent;
-            }
-            if (node == null)
-                return;
-            EntryNode<K,V> p = node.parent;
-            EntryNode<K,V> newNode = null;
-            if (node.diff > 1){
-                if (node.left.diff >= 0){
-                    newNode = rotateWithLeftChild(node);
-                } else {
-                    newNode = doubleWithLeftChild(node);
-                }
-            } else if (node.diff < -1){
-                if (node.right.diff <= 0){
-                    newNode = rotateWithRightChild(node);
-                } else {
-                    newNode = doubleWithRightChild(node);
-                }
-            }
-            if (p != null){
-                if (p.left == node){
-                    p.left = newNode;
-                } else {
-                    p.right = newNode;
-                }
-            }else {
-                root = newNode;
-            }
-            newNode.parent = p;
-
-            node = newNode;
-            // 更新路径平衡因子
-            while (p != null){
-                if (p.left == node){
                     p.diff--;
-                } else {
-                    p.diff++;
                 }
-                node = p;
-                p = p.parent;
+                balanceForInsert(p);
             }
         }
 
-//        public V remove(K k){
-//
-//        }
+        private void balanceForInsert(EntryNode<K,V> node){
+            EntryNode<K,V> p = node.parent;
+            while (node != null && node.diff != 0){
+                //检查当前节点是否需要旋转
+                //更新父节点的diff
+                if (!isBalance(node)){
+                    EntryNode<K,V> newNode = null;
+                    if (node.diff > 1){
+                        if (node.left.diff >= 0){
+                            newNode = rotateWithLeftChild(node);
+                        } else {
+                            newNode = doubleWithLeftChild(node);
+                        }
+                    } else if (node.diff < -1){
+                        if (node.right.diff <= 0){
+                            newNode = rotateWithRightChild(node);
+                        } else {
+                            newNode = doubleWithRightChild(node);
+                        }
+                    }
+                    if (p != null){
+                        if (p.left == node){
+                            p.left = newNode;
+                        } else {
+                            p.right = newNode;
+                        }
+                    }else {
+                        root = newNode;
+                    }
+                    newNode.parent = p;
+                    // 旋转后树高恢复为插入之前，不必再通知父节点
+                    break;
+                }
+
+                if (p == null)
+                    break;
+
+                if (p.left == node)
+                    p.diff++;
+                else
+                    p.diff--;
+                node = p;
+                p = node.parent;
+            }
+        }
+
+        private void balanceForDelete(EntryNode<K,V> node){
+            EntryNode<K,V> p = node.parent;
+            while (node != null && node.diff != -1 && node.diff != 1){
+                //检查当前节点是否需要旋转
+                //更新父节点的diff
+                if (!isBalance(node)){
+                    EntryNode<K,V> newNode = null;
+                    if (node.diff > 1){
+                        if (node.left.diff >= 0){
+                            newNode = rotateWithLeftChild(node);
+                        } else {
+                            newNode = doubleWithLeftChild(node);
+                        }
+                    } else if (node.diff < -1){
+                        if (node.right.diff <= 0){
+                            newNode = rotateWithRightChild(node);
+                        } else {
+                            newNode = doubleWithRightChild(node);
+                        }
+                    }
+                    if (p != null){
+                        if (p.left == node){
+                            p.left = newNode;
+                        } else {
+                            p.right = newNode;
+                        }
+                    }else {
+                        root = newNode;
+                    }
+                    newNode.parent = p;
+                    node = newNode;
+                }
+
+                if (p == null)
+                    break;
+
+                if (node.diff == 0){
+                    if (p.left == node)
+                        p.diff--;
+                    else
+                        p.diff++;
+                    node = p;
+                    p = node.parent;
+                }else {
+                    System.out.println("郁昊");
+                    break;
+                }
+            }
+
+        }
+
+
+        public V remove(K k){
+            return remove(k,root);
+        }
+        private V remove(K k, EntryNode<K,V> t){
+            EntryNode<K,V> p = null;
+            int cpr = 0;
+            while (t != null){
+                cpr = k.compareTo(t.k);
+                if (cpr < 0){
+                    p = t;
+                    t = t.left;
+                } else if (cpr > 0){
+                    p = t;
+                    t = t.right;
+                } else {
+                    if (t.left != null && t.right != null){
+                        EntryNode<K,V> min = findMin(t.right);
+                        V v = t.v;
+                        t.k = min.k;
+                        t.v = min.v;
+                        remove(min.k,t.right);
+                        return v;
+                    } else {
+                        if (p.left == t){
+                            t = t.left != null ? t.left : t.right;
+                            p.left = t;
+                            p.diff--;
+                        } else {
+                            t = t.left != null ? t.left : t.right;
+                            p.right = t;
+                            p.diff++;
+                        }
+                        if (t != null)
+                            t.parent = p;
+                    }
+                    break;
+                }
+            }
+            balanceForDelete(p);
+            return t != null ? t.v : null;
+        }
+
+        private EntryNode<K,V> findMin(EntryNode<K,V> t){
+            while (t.left != null){
+                t = t.left;
+            }
+            return t;
+        }
 
         private static boolean isBalance(EntryNode node){
             if (node == null)
@@ -192,12 +290,19 @@ public class Pr23 {
 
     public static void main(String[] args) {
         PR23_AVL_Tree<String,String> avlTree = new PR23_AVL_Tree<>();
+        avlTree.insert("H","AAA");
         avlTree.insert("E","AAA");
+        avlTree.insert("J","AAA");
+        avlTree.insert("I","AAA");
+        avlTree.insert("K","AAA");
         avlTree.insert("C","AAA");
         avlTree.insert("F","AAA");
         avlTree.insert("B","AAA");
         avlTree.insert("D","AAA");
-//        avlTree.insert("A","AAA");
+        avlTree.insert("L","AAA");
+        avlTree.insert("G","AAA");
+        avlTree.insert("A","AAA");
+        avlTree.remove("H");
         avlTree.print();
     }
 }
