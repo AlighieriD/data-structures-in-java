@@ -43,6 +43,8 @@ public class Pr23 {
                         t.diff--;
                         p = t;
                         t = t.right;
+                    } else {
+                        break;
                     }
                 }
                 if (cpr < 0){
@@ -60,26 +62,48 @@ public class Pr23 {
             }
             if (node == null)
                 return;
+            EntryNode<K,V> p = node.parent;
+            EntryNode<K,V> newNode = null;
             if (node.diff > 1){
                 if (node.left.diff >= 0){
-                    rotateWithLeftChild(node);
+                    newNode = rotateWithLeftChild(node);
                 } else {
-                    doubleWithLeftChild(node);
+                    newNode = doubleWithLeftChild(node);
                 }
             } else if (node.diff < -1){
                 if (node.right.diff <= 0){
-                    rotateWithRightChild(node);
+                    newNode = rotateWithRightChild(node);
                 } else {
-                    doubleWithRightChild(node);
+                    newNode = doubleWithRightChild(node);
                 }
             }
+            if (p != null){
+                if (p.left == node){
+                    p.left = newNode;
+                } else {
+                    p.right = newNode;
+                }
+            }else {
+                root = newNode;
+            }
+            newNode.parent = p;
 
-
+            node = newNode;
+            // 更新路径平衡因子
+            while (p != null){
+                if (p.left == node){
+                    p.diff--;
+                } else {
+                    p.diff++;
+                }
+                node = p;
+                p = p.parent;
+            }
         }
 
-        public V remove(K k){
-
-        }
+//        public V remove(K k){
+//
+//        }
 
         private static boolean isBalance(EntryNode node){
             if (node == null)
@@ -153,5 +177,27 @@ public class Pr23 {
             return rotateWithRightChild(node);
         }
 
+        public void print(){
+            print(root);
+        }
+
+        private void print(EntryNode<K,V> t){
+            if (t == null)
+                return;
+            print(t.left);
+            System.out.println(t.k+" 平衡因子："+t.diff);
+            print(t.right);
+        }
+    }
+
+    public static void main(String[] args) {
+        PR23_AVL_Tree<String,String> avlTree = new PR23_AVL_Tree<>();
+        avlTree.insert("E","AAA");
+        avlTree.insert("C","AAA");
+        avlTree.insert("F","AAA");
+        avlTree.insert("B","AAA");
+        avlTree.insert("D","AAA");
+//        avlTree.insert("A","AAA");
+        avlTree.print();
     }
 }
