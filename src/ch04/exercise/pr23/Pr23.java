@@ -7,7 +7,7 @@ import ch04.exercise.pr21.Pr21;
  */
 public class Pr23 {
     public static class PR23_AVL_Tree<K extends Comparable<? super K>,V> {
-        private static class EntryNode<K,V> {
+        protected static class EntryNode<K,V> {
             public K k;
             public V v;
             public int diff;
@@ -146,7 +146,6 @@ public class Pr23 {
                     node = p;
                     p = node.parent;
                 }else {
-                    System.out.println("郁昊");
                     break;
                 }
             }
@@ -265,12 +264,13 @@ public class Pr23 {
             return t;
         }
 
-        private EntryNode<K,V> doubleWithLeftChild(EntryNode<K,V> node){
+        protected EntryNode<K,V> doubleWithLeftChild(EntryNode<K,V> node){
+            System.out.println("旧版");
             node.left = rotateWithRightChild(node.left);
             return rotateWithLeftChild(node);
         }
 
-        private EntryNode<K,V> doubleWithRightChild(EntryNode<K,V> node){
+        protected EntryNode<K,V> doubleWithRightChild(EntryNode<K,V> node){
             node.right = rotateWithLeftChild(node.right);
             return rotateWithRightChild(node);
         }
@@ -286,23 +286,7 @@ public class Pr23 {
             System.out.println(t.k+" 平衡因子："+t.diff);
             print(t.right);
         }
+
     }
 
-    public static void main(String[] args) {
-        PR23_AVL_Tree<String,String> avlTree = new PR23_AVL_Tree<>();
-        avlTree.insert("H","AAA");
-        avlTree.insert("E","AAA");
-        avlTree.insert("J","AAA");
-        avlTree.insert("I","AAA");
-        avlTree.insert("K","AAA");
-        avlTree.insert("C","AAA");
-        avlTree.insert("F","AAA");
-        avlTree.insert("B","AAA");
-        avlTree.insert("D","AAA");
-        avlTree.insert("L","AAA");
-        avlTree.insert("G","AAA");
-        avlTree.insert("A","AAA");
-        avlTree.remove("H");
-        avlTree.print();
-    }
 }
