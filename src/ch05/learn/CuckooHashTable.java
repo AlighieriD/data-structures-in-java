@@ -1,5 +1,7 @@
 package ch05.learn;
 
+import java.util.Random;
+
 /**
  * 布谷鸟散列的变体
  * 不是经典布谷鸟实现，只用到了一个表，但是允许传入Hash族
@@ -71,16 +73,63 @@ public class CuckooHashTable<AnyType> {
      * @param x
      * @return
      */
+    private Random r = new Random();
+    private int rehashes = 0;
     private boolean insertHelper1(AnyType x){
         final int COUNT_LIMIT = 100;
         while (true){
+            int lastPos = -1;
+            int pos;
+            for (int count = 0; count < COUNT_LIMIT; count++) {
+                // 尝试所有的Hash方法，找到空位
+                for (int i = 0; i < numHashFunctions; i++) {
+                    pos = myhash(x,i);
+                    if (array[pos] == null){
+                        array[pos] = x;
+                        currentSize++;
+                        return true;
+                    }
+                }
+                // 没有找到空位，随机擦除一位，找一个
+                int i = 0;
+                do {
+                    pos = myhash(x,r.nextInt(numHashFunctions));
+                } while (pos == lastPos && i++ < 5);
 
+                AnyType tmp = array[lastPos = pos];
+                array[pos] = x;
+                x = tmp;
+            }
+
+            // 如果尝试若干次，依然没法插入成功，则尝试rehash表
+            // 如果已经经过若干次rehash , 则扩充表的大小
+            if (++rehashes > ALLOWED_REHASHS){
+                expand();
+                rehashes = 0;
+            } else {
+                rehash();
+            }
         }
     }
 
-    private void expand(){}
+    private void expand(){
+        rehash((int)(array.length / MAX_LOAD));
+    }
 
-    private void rehash(){}
+    private void rehash(){
+        hashFunctions.generateNewFunctions();
+        rehash(array.length);
+    }
+
+    private void rehash(int size){
+        AnyType[] oldArray = array;
+        allocateArray(nextPrime(size));
+        currentSize = 0;
+        for (AnyType a : oldArray){
+            if (a != null)
+                insert(a);
+        }
+    }
 
     private void doClear(){
         currentSize = 0;
@@ -88,7 +137,9 @@ public class CuckooHashTable<AnyType> {
             array[i] = null;
     }
 
-    private void allocateArray(int size){}
+    private void allocateArray(int size){
+        array = (AnyType[]) new Object[nextPrime(size)];
+    }
 
     private static final double MAX_LOAD = 0.4;
     private static final int ALLOWED_REHASHS = 1;
@@ -98,4 +149,57 @@ public class CuckooHashTable<AnyType> {
     private final int numHashFunctions;
     private AnyType[] array;
     private int currentSize;
+
+    private static int nextPrime(int n){
+        n++;
+        while (!isPrime(n)){
+            n++;
+        }
+        return n;
+    }
+
+    private static boolean isPrime(int n){
+        if (n < 2)
+            return false;
+        for (int i = 2; i < n; i++) {
+            if (n % i == 0)
+                return false;
+        }
+        return true;
+
+    }
+
+}
+
+/**
+ * 布谷鸟散列的简单字符串散列。
+ */
+class StringHashFamily implements CuckooHashTable.HashFamily<String>{
+    private final int[] MULTIPLIES;
+    private final Random r = new Random();
+    StringHashFamily(int d){
+        MULTIPLIES = new int[d];
+        generateNewFunctions();
+    }
+    @Override
+    public int hash(String x, int whitch) {
+        final int multiplier = MULTIPLIES[whitch];
+        int hashVal = 0;
+        for (int i = 0; i < x.length(); i++) {
+            hashVal = multiplier * hashVal + x.charAt(i);
+        }
+        return hashVal;
+    }
+
+    @Override
+    public int getNumberOfFunctions() {
+        return MULTIPLIES.length;
+    }
+
+    @Override
+    public void generateNewFunctions() {
+        for (int i = 0; i < MULTIPLIES.length; i++) {
+            MULTIPLIES[i] = r.nextInt();
+        }
+    }
 }
