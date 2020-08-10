@@ -1,6 +1,8 @@
 package ch03.exercise.pr12;
 
 
+import java.util.Iterator;
+
 /**
  * Created by YH on 2020/6/5.
  */
@@ -14,7 +16,7 @@ public class Pr12 {
         }
     }
 
-    public static class MyLinkedList_PR12<E extends Comparable<? super E>>{
+    public static class MyLinkedList_PR12<E extends Comparable<? super E>> implements Iterable<E>{
         private int size = 0;
         private Node<E> head = new Node<>(null,null);
 
@@ -90,6 +92,28 @@ public class Pr12 {
             } else {
                 return null;
             }
+        }
+
+        private class MyIterator implements Iterator<E>{
+            Node<E> current = head;
+            @Override
+            public boolean hasNext() {
+                return current.next != null;
+            }
+
+            @Override
+            public E next() {
+                if (hasNext()){
+                    current = current.next;
+                    return current.e;
+                }else {
+                    return null;
+                }
+            }
+        }
+        @Override
+        public Iterator<E> iterator() {
+            return new MyIterator();
         }
     }
 }

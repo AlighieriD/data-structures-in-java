@@ -45,11 +45,11 @@ public class SeparateChainingHashTable<AnyType> {
             theLists[i] = new LinkedList<>();
     }
 
-    private static final int DEFAULT_TABLE_SIZE = 101;
+    protected static final int DEFAULT_TABLE_SIZE = 101;
 
-    private List<AnyType>[] theLists;
+    protected List<AnyType>[] theLists;
 
-    private int currentSize;
+    protected int currentSize;
 
     private void rehash(){};
 
@@ -62,7 +62,7 @@ public class SeparateChainingHashTable<AnyType> {
         return hashVal;
     }
 
-    private static int nextPrime(int n){
+    protected static int nextPrime(int n){
         n++;
         while (!isPrime(n)){
             n++;
