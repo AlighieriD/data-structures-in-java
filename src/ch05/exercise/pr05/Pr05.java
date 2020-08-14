@@ -1,4 +1,4 @@
-package ch05.exercise.pr05.pr05;
+package ch05.exercise.pr05;
 
 import ch05.learn.SeparateChainingHashTable;
 

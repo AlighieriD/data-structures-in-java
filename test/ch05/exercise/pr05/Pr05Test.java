@@ -1,14 +1,11 @@
 package ch05.exercise.pr05;
 
-import ch05.exercise.pr05.pr05.Pr05;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-/**
- * Created by YH on 2020/8/8.
- */
-class Pr05Test {
+import static org.junit.jupiter.api.Assertions.*;
 
+class Pr05Test {
     @Test
     void test(){
         Pr05.SeparateSingleChainingHashTable<String> s = new Pr05.SeparateSingleChainingHashTable<>(11);
@@ -21,4 +18,5 @@ class Pr05Test {
         s.remove("A");
         Assertions.assertFalse(s.contains("A"));
     }
+
 }

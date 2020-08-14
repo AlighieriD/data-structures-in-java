@@ -1,4 +1,4 @@
-package ch05.exercise.pr05.pr13;
+package ch05.exercise.pr13;
 
 import ch03.exercise.pr12.Pr12;
 
