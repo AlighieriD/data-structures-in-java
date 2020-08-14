@@ -1,4 +1,4 @@
-package ch05.exercise.pr05.pr21;
+package ch05.exercise.pr21;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +18,7 @@ public class Pr21 {
      * c. 交换两个相邻的字符。
      */
 
-    private static class Entry{
+    public static class Entry{
         public int line;
         public List<String> words;
         public Entry(int line, List<String> words){
@@ -62,14 +62,5 @@ public class Pr21 {
     private static void test(Set<String> set, String input, List<String> result){
 
     }
-
-    public static void main(String[] args) {
-        try {
-            Map<String,Entry> m = wordTest();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
