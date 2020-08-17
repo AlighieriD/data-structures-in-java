@@ -60,7 +60,7 @@ public class Pr21 {
     }
 
     private static void test(Set<String> set, String input, List<String> result){
-
+        // TODO 看完动规部分再实现
     }
 
 }
