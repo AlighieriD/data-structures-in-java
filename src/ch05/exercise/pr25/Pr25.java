@@ -1,6 +1,5 @@
 package ch05.exercise.pr25;
 
-import ch05.learn.CuckooHashTable;
 import org.omg.CORBA.IntHolder;
 
 /**
@@ -85,30 +84,26 @@ public class Pr25 {
             return insertHelper1(x);
         }
 
+        private int rehashes = 0;
         private boolean insertHelper1(AnyType x){
             final int COUNT_LIMIT = 100;
             while (true){
-                int lastPos = -1;
                 int pos;
                 for (int count = 0; count < COUNT_LIMIT; count++) {
-                    // 尝试所有的Hash方法，找到空位
+                    // 总是替换第一次找到的位置
                     for (int i = 0; i < numHashFunctions; i++) {
                         pos = myhash(x,i);
-                        if (array[pos] == null){
-                            array[pos] = x;
+                        if (array[i][pos] == null){
+                            array[i][pos] = x;
+                            sizeAtTable[i]++;
                             currentSize++;
                             return true;
+                        } else {
+                            AnyType tmp = array[i][pos];
+                            array[i][pos] = x;
+                            x = tmp;
                         }
                     }
-                    // 没有找到空位，随机擦除一位，找一个
-                    int i = 0;
-                    do {
-                        pos = myhash(x,r.nextInt(numHashFunctions));
-                    } while (pos == lastPos && i++ < 5);
-
-                    AnyType tmp = array[lastPos = pos];
-                    array[pos] = x;
-                    x = tmp;
                 }
 
                 // 如果尝试若干次，依然没法插入成功，则尝试rehash表
@@ -135,6 +130,7 @@ public class Pr25 {
             AnyType[][] oldArray = array;
             allocateArray(nextPrime(size));
             currentSize = 0;
+            sizeAtTable = new int[numHashFunctions];
             for (AnyType[] a : oldArray){
                 for(AnyType v : a){
                     if (v != null)
@@ -145,8 +141,12 @@ public class Pr25 {
 
         private void doClear(){
             currentSize = 0;
-            for (int i = 0; i < array.length; i++)
-                array[i] = null;
+            sizeAtTable = new int[numHashFunctions];
+            for (int i = 0; i < array.length; i++){
+                for (int j = 0; j < array[i].length; j++){
+                    array[i][j] = null;
+                }
+            }
         }
 
         private void allocateArray(int size){
