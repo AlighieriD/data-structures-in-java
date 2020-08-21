@@ -6,6 +6,8 @@ package ch05.exercise.pr24;
 public class Pr24 {
     public static class Hopscotch<AnyType>{
         private final int MAX_DIST;
+        // 最大的负载因子，如果表中负载大于MAX_LOAD则进行扩展表
+        private static final double MAX_LOAD = 0.4;
         private static final int DEFAULT_TABLE_SIZE = 101;
         private int currentSize;
         Hopscotch(int maxDist){
@@ -13,19 +15,40 @@ public class Pr24 {
         }
         Hopscotch(int maxDist, int size){
             MAX_DIST = maxDist;
-            dist = new int[maxDist];
+            hops = new int[maxDist];
             allocateArray(size);
             doClear();
         }
         private AnyType[] array;
-        private int[] dist;
+        private int[] hops;
+
+        public boolean contains(AnyType x){
+            int hash = myhash(x);
+            int hop = hops[hash];
+        }
+
+//        public boolean remove(AnyType x){
+//
+//        }
+//
+//        public boolean insert(AnyType x){
+//
+//        }
+
+        private int myhash(AnyType x){
+            int hashVal = x.hashCode();
+            hashVal %= array.length;
+            if (hashVal < 0)
+                hashVal += array.length;
+            return hashVal;
+        }
 
         private void doClear(){
             currentSize = 0;
             for (int i = 0; i < array.length; i++)
                 array[i] = null;
-            for (int i = 0; i < dist.length; i++) {
-                dist[i] = 0;
+            for (int i = 0; i < hops.length; i++) {
+                hops[i] = 0;
             }
         }
 
