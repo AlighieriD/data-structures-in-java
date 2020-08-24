@@ -16,7 +16,6 @@ public class Pr24 {
         }
         Hopscotch(int maxDist, int size){
             MAX_DIST = maxDist;
-            hops = new int[maxDist];
             allocateArray(size);
             doClear();
         }
@@ -78,7 +77,36 @@ public class Pr24 {
                 }
                 // 插入距离过远，需要移动
                 while (dist >= MAX_DIST){
-                    // TODO
+                    // 在 k-1 ~ k - MAX_DIST + 1 之间 寻找
+                    boolean find = false;
+                    for (int i = hash + dist - MAX_DIST + 1 ; i < hash + dist; i++) {
+                        int hop = hops[i];
+                        int hopDist = 0;
+                        while (hop != 0 && i + hopDist < hash + dist){
+                            int h = hop & 1;
+                            if (h != 0){
+                                array[hash + dist] = array[i + hopDist];
+                                hops[i] |= (1 << (hash + dist - i));
+                                array[i + hopDist] = null;
+                                hops[i] &= ~(1 << hopDist);
+                                find = true;
+                                dist = i + hopDist - hash;
+                                break;
+                            }
+                            hop = hop >>> 1;
+                            hopDist++;
+                        }
+                        if (find)
+                            break;
+                    }
+                    if (!find){
+                        if (++expanded > ALLOWED_REHASHS){
+                            throw new RuntimeException("插入失败");
+                        } else {
+                            expand();
+                            break;
+                        }
+                    }
                 }
                 // 可以插入
                 if (dist < MAX_DIST){
@@ -92,15 +120,21 @@ public class Pr24 {
         }
 
         private void expand(){
-
+            rehash((int) (array.length / MAX_LOAD));
         }
 
-        private void rehash(){
-
-        }
+//        private void rehash(){
+//
+//        }
 
         private void rehash(int size){
-
+            AnyType[] oldArray = array;
+            allocateArray(nextPrime(size));
+            currentSize = 0;
+            for (AnyType a : oldArray){
+                if (a != null)
+                    insert(a);
+            }
         }
 
         private boolean isFull(AnyType x){
@@ -150,7 +184,9 @@ public class Pr24 {
         }
 
         private void allocateArray(int size){
-            array = (AnyType[]) new Object[nextPrime(size)];
+            int i = nextPrime(size);
+            hops = new int[i];
+            array = (AnyType[]) new Object[i];
         }
 
         private static int nextPrime(int n){
