@@ -9,7 +9,7 @@ public class Pr24 {
         // 最大的负载因子，如果表中负载大于MAX_LOAD则进行扩展表
         private static final double MAX_LOAD = 0.4;
         private static final int DEFAULT_TABLE_SIZE = 101;
-        private static final int ALLOWED_REHASHS = 1;
+        private static final int ALLOWED_REHASHS = 3;
         private int currentSize;
         Hopscotch(int maxDist){
             this(maxDist,DEFAULT_TABLE_SIZE);
@@ -55,43 +55,39 @@ public class Pr24 {
             return false;
         }
 
-
-        int expanded = 0;
         public boolean insert(AnyType x){
             if (contains(x))
                 return false;
+            int expanded = 0;
             while (true){
-            }
-            // 如果hops已满，则expand
-            while (isFull(x)){
-                if (++expanded > ALLOWED_REHASHS){
-                    throw new RuntimeException("插入失败");
+                // hops 已满
+                if (isFull(x)) {
+                    if (++expanded > ALLOWED_REHASHS){
+                        throw new RuntimeException("插入失败");
+                    } else {
+                        expand();
+                        continue;
+                    }
                 }
-                else{
+                int hash = myhash(x);
+                int dist = probe(hash);
+                // 表已满，找不到位置插入
+                if (dist < 0){
                     expand();
+                    continue;
+                }
+                // 插入距离过远，需要移动
+                while (dist >= MAX_DIST){
+                    // TODO
+                }
+                // 可以插入
+                if (dist < MAX_DIST){
+                    array[hash + dist] = x;
+                    hops[hash] |= (1 << dist);
+                    currentSize++;
+                    return true;
                 }
             }
-            // 尝试插入hops中的空位中
-            int hash = myhash(x);
-            int dist = probe(hash);
-
-            while (dist >= MAX_DIST){
-
-            }
-            // 表已满，找不到位置插入
-            if (dist < 0)
-                return false;
-            // 可以插入
-            if (dist < MAX_DIST){
-                array[hash + dist] = x;
-                hops[hash] |= (1 << dist);
-                currentSize++;
-                return true;
-            }else {
-
-            }
-
-            // 尝试挪出空位
 
         }
 
