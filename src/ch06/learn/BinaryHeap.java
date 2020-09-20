@@ -51,7 +51,7 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>> {
     }
 
     public boolean isEmpty(){
-        return currentSize > 0;
+        return currentSize == 0;
     }
 
     public void makeEmpty(){}
